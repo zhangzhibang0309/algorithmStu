@@ -1,5 +1,7 @@
 package com.catalina.linkedList;
 
+import sun.security.util.Length;
+
 /**
  * 对于复杂度分析 一般分为 最好 最坏 平均情况复杂度
  * 动态数组缩容
@@ -47,6 +49,11 @@ public class ArrayListCutDown<E> extends AbstractList<E>{
 
         有人会觉得如果之前这个数组开辟了10w个 后面clear之后你不需要这么多 那你可以设置一个判断 size大于多少的时候销毁内存 小于这个数的时候size=0
          */
+
+        // 还是进行了缩容 也是处理了上面所说的那个问题
+        if (elements != null && elements.length > DEFAULT_CAPACITY) {
+            elements = (E[]) new Object[DEFAULT_CAPACITY];
+        }
     }
 
     /**

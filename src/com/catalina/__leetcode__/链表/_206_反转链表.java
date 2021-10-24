@@ -1,4 +1,4 @@
-package com.catalina.leetcode.链表;
+package com.catalina.__leetcode__.链表;
 
 public class _206_反转链表 {
 
