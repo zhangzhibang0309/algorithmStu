@@ -1,9 +1,22 @@
-package com.catalina.linkedList;
+package com.catalina.linkedList.single;
 
-public class LinkedList<E> extends AbstractList<E> {
+import com.catalina.linkedList.AbstractList;
+
+/**
+ * 增加一个虚拟头节点
+ *
+ * @param <E>
+ */
+public class SingleLinkedListVirtualHead<E> extends AbstractList<E> {
 
     private Node<E> first; // 这算是链表的head 里面只存储了size 和first指针
     //first本身就是一个node，它指向了第一个node
+
+    // 构造函数
+    // 主要是为了创造这个虚拟头节点
+    public SingleLinkedListVirtualHead() {
+        first = new Node<>(null, null);
+    }
 
     // 匿名内部类 链表中的每个节点
     private static class Node<E> {
@@ -57,13 +70,8 @@ public class LinkedList<E> extends AbstractList<E> {
     public void add(int index, E element) {
         rangeCheckForAdd(index);
 
-        if (index == 0) {
-            first = new Node<>(element, first);
-        } else {
-            Node<E> prev = node(index - 1);
-            prev.next = new Node<E>(element, prev.next);
-        }
-
+        Node<E> prev = index == 0 ? first : node(index - 1);
+        prev.next = new Node<E>(element, prev.next);
 
         size++;
     }
@@ -72,16 +80,11 @@ public class LinkedList<E> extends AbstractList<E> {
     public E remove(int index) {
         rangeCheck(index);
 
-        Node<E> node = first;
-        if (index == 0) {
-            first = first.next;
-        }else {
-            Node<E> prev = node(index - 1);
-            prev.next = prev.next.next;
-        }
-
+        Node<E> prev = index == 0 ? first : node(index - 1);
+        Node<E> oldNode = prev.next;// 被删除的节点 暂存一下
+        prev.next = oldNode.next;
         size--;
-        return node.element;
+        return oldNode.element;
     }
 
 
@@ -114,7 +117,7 @@ public class LinkedList<E> extends AbstractList<E> {
     private Node<E> node(int index) {
         rangeCheck(index);
 
-        Node<E> node = first;
+        Node<E> node = first.next;
         for (int i = 0; i < index; i++) {
             node = node.next;
         }
@@ -126,7 +129,7 @@ public class LinkedList<E> extends AbstractList<E> {
         StringBuilder string = new StringBuilder();
         string.append("size=").append(size).append(", [");
 
-        Node<E> node = first;
+        Node<E> node = first.next;
         for (int i = 0; i < size; i++) {
             if (i != 0) string.append(",");
 

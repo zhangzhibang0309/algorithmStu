@@ -2,10 +2,11 @@ package com.catalina.linkedList;
 
 /**
  * 对于复杂度分析 一般分为 最好 最坏 平均情况复杂度
+ * 动态数组缩容
  *
  * @param <E>
  */
-public class ArrayList<E> extends AbstractList<E>{
+public class ArrayListCutDown<E> extends AbstractList<E>{
     /**
      * 所有的元素
      */
@@ -18,13 +19,13 @@ public class ArrayList<E> extends AbstractList<E>{
     /**
      * 构造函数
      */
-    public ArrayList(int capaticy) {
+    public ArrayListCutDown(int capaticy) {
         // 判断 不能让容量太少
         capaticy = (capaticy < 10 ? DEFAULT_CAPACITY : capaticy);
         elements = (E[]) new Object[capaticy];
     }
 
-    public ArrayList() { // 无参
+    public ArrayListCutDown() { // 无参
         // 调用其他构造函数
         this(DEFAULT_CAPACITY);
     }
@@ -117,6 +118,8 @@ public class ArrayList<E> extends AbstractList<E>{
         }
         elements[--size] = null;
 
+        trim();
+
         return old;
     }
 
@@ -165,6 +168,29 @@ public class ArrayList<E> extends AbstractList<E>{
         System.out.println(oldCapacity + "扩容为" + newCapacity);
     }
 
+
+    /**
+     * 缩容
+     *
+     * @return
+     */
+    private void trim() {
+        int oldCapacity = elements.length;
+
+        // 这个地方缩容需要注意 缩容的值 *
+        int newCapacity = oldCapacity / 4;
+
+        if ((size >= newCapacity) || oldCapacity <= DEFAULT_CAPACITY) return;
+
+        // 剩余空间还很多
+        E[] newElements = (E[]) new Object[newCapacity];
+        for (int i = 0; i < size; i++) {
+            newElements[i] = elements[i];
+        }
+        elements = newElements;
+
+        System.out.println(oldCapacity+"缩容为"+newCapacity);
+    }
 
     @Override
     public String toString() {
