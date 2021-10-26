@@ -2,7 +2,7 @@ package com.catalina.linkedList.single;
 
 import com.catalina.linkedList.AbstractList;
 
-public class SingleLinkedList<E> extends AbstractList<E> {
+public class SingleCircleLinkedList<E> extends AbstractList<E> {
 
     private Node<E> first; // 这算是链表的head 里面只存储了size 和first指针
     //first本身就是一个node，它指向了第一个node
@@ -17,6 +17,14 @@ public class SingleLinkedList<E> extends AbstractList<E> {
             this.element = element;
             this.next = next;
         }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append(element).append("_").append(next.element);
+
+            return sb.toString();
+        }
     }
 
     /**
@@ -30,9 +38,6 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 
     /**
      * 获取某个索引的元素
-     * 最好 O(1)
-     * 最坏 O(n)
-     * 平均 O(n)
      *
      * @param index
      * @return
@@ -44,9 +49,6 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 
     /**
      * 设置某个索引的元素
-     * 最好 O(1)
-     * 最坏 O(n)
-     * 平均 O(n)
      *
      * @param index
      * @param element
@@ -63,9 +65,6 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 
     /**
      * 添加节点
-     * 最好 O(1)
-     * 最坏 O(n)
-     * 平均 O(n)
      *
      * @param index
      * @param element
@@ -75,7 +74,13 @@ public class SingleLinkedList<E> extends AbstractList<E> {
         rangeCheckForAdd(index);
 
         if (index == 0) {
-            first = new Node<>(element, first);
+            Node<E> newFirst = new Node<>(element, first);
+
+            // 拿到最后一个节点
+            // size是可能==0的 因为size++还没来得及
+            Node<E> last = (size == 0) ? newFirst : node(size - 1);
+            last.next = newFirst;
+            first = newFirst;
         } else {
             Node<E> prev = node(index - 1);
             prev.next = new Node<E>(element, prev.next);
@@ -97,8 +102,10 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 
         Node<E> node = first;
         if (index == 0) {
+            Node<E> last = node(size - 1);
             first = first.next;
-        }else {
+            last.next = first;
+        } else {
             Node<E> prev = node(index - 1);
             prev.next = prev.next.next;
         }
@@ -108,7 +115,8 @@ public class SingleLinkedList<E> extends AbstractList<E> {
     }
 
     /**
-     * 查找某个元素节点对应的索引
+     * 查找元素对应节点的索引
+     *
      * @param element
      * @return
      */
@@ -160,7 +168,7 @@ public class SingleLinkedList<E> extends AbstractList<E> {
         for (int i = 0; i < size; i++) {
             if (i != 0) string.append(",");
 
-            string.append(node.element);
+            string.append(node);
             node = node.next;
         }
         string.append("]");
