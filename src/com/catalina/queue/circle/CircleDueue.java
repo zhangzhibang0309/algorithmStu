@@ -1,14 +1,14 @@
 package com.catalina.queue.circle;
 
-import java.util.Arrays;
+import javax.swing.plaf.metal.MetalIconFactory;
 
-public class CircleQueue<E> {
+public class CircleDueue<E> {
     public int front;
     private int size;
     private E[] elements; // 用数组实现
     private static final int DEFAULT_CAPACITY = 10;
 
-    public CircleQueue() {
+    public CircleDueue() {
         elements = (E[]) new Object[DEFAULT_CAPACITY];
     }
 
@@ -20,14 +20,14 @@ public class CircleQueue<E> {
         return size == 0;
     }
 
-    public void enQueue(E element) {
+    public void enQueueRear(E element) {
         ensureCapacity(size + 1);
         elements[index(size)] = element;
         size++;
 
     }
 
-    public E deQueue() {
+    public E deQueueFront() {
         E frontElement = elements[front];
         elements[front] = null;
         front = index(1);
@@ -36,15 +36,36 @@ public class CircleQueue<E> {
         return frontElement;
     }
 
+    public void enQueueFront(E element) {
+        ensureCapacity(size + 1);
+        front = index(-1);
+        elements[front] = element;
+        size++;
+
+    }
+
+    public E deQueueRear() {
+        int rearIndex = index(size - 1);
+        E rear = elements[rearIndex];
+        elements[rearIndex] = null;
+        size--;
+
+        return rear;
+    }
+
     public E front() {
         return elements[front];
+    }
+
+    public E rear() {
+        return elements[index(front + size)];
     }
 
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
         string.append("capacity=").append(elements.length)
-        .append(" size=").append(size).append(",[");
+                .append(" size=").append(size).append(",[");
         for (int i = 0; i < elements.length; i++) {
             if (i != 0) {
                 string.append(", ");
@@ -81,10 +102,11 @@ public class CircleQueue<E> {
      * 找到真实索引
      */
     public int index(int index) {
-        // 优化了之前的取模运算
-        // 因为index最大也不会>2 * elements.length
-        // 举个例子 elements.length = 7，front指向6，6+7 < 2 * elements.length,这已经是index最大的情况了，所以可以这样去优化
-        // index要>=0(0肯定可以，但是不能是负数，单端循环也不会出现负数) 然后elements.length也不能是0
+        index += front;
+        if (index < 0) {
+            return index + elements.length;
+        }
+
         return index - (index >= elements.length ? elements.length : 0);
     }
 

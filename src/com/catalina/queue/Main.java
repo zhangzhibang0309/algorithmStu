@@ -1,20 +1,28 @@
 package com.catalina.queue;
 
-import java.util.zip.DeflaterOutputStream;
+import com.catalina.queue.circle.CircleDueue;
+import com.catalina.queue.circle.CircleQueue;
+
 
 public class Main {
 
     public static void main(String[] args) {
-        Queue<Integer> queue = new Queue<>();
+        CircleDueue<Integer> queue = new CircleDueue<>();
 
-        queue.enQueue(11);
-        queue.enQueue(22);
-        queue.enQueue(33);
-        queue.enQueue(44);
-        queue.enQueue(55);
+        for (int i = 0; i < 10; i++) {
+            queue.enQueueFront(i+1);
+            queue.enQueueRear(i+100);
+        }
 
+        for (int i = 0; i < 3; i++) {
+            queue.deQueueFront();
+            queue.deQueueRear();
+        }
+        queue.enQueueFront(11);
+        queue.enQueueFront(12);
+        System.out.println(queue);
         while (!queue.isEmpty()) {
-            System.out.println(queue.deQueue());
+            System.out.println(queue.deQueueFront());
         }
     }
 }
