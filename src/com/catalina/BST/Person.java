@@ -19,4 +19,11 @@ public class Person implements Comparable<Person>{
     public int compareTo(Person e) {
         return age - e.age;
     }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "age=" + age +
+                '}';
+    }
 }
